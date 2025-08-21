@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+    --primary: #4bc9a3;   
+    --secondary: #f4f0f0e5; 
+    --light: #ffffff;    
+    --gray: #f4f4f9;     
+    --dark: #2d2d2d;
+}
+
+/* Titolo principale */
+.stTitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2.5em;
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 0;
+    font-weight: 700;
+}
+
+/* Header e sidebar */
+.stHeader {
+    background-color: var(--primary);
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5em;
+    color: #8fecc5;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.stExpander {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+    color: #000000;
+}
+
+/* Testo generale */
+.stMarkdown {
+    font-family: 'Roboto', sans-serif;
+    color: var(--dark);
+}
+
+.customHdr {
+    color: var(--secondary);
+    font-weight: 500;
+}
+
+/* Bottoni */
+.customBtn {
+    background-color: var(--secondary);
+    border-radius: 8px;
+    color: var(--light);
+    font-weight: 600;
+    padding: 6px 12px;
+}
+
+.st-emotion-cache-1hkc054:hover {
+    background-color: var(--primary);
+    color: var(--light);
+}
+
+/* Messaggi utente e assistente */
+.user-message {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.assistant-message {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.stChatMessage {
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    font-size: 16px;
+}
+
+/* Bolle di chat */
+.user-bubble {
+    background-color: var(--secondary);
+    padding: 8px;
+    border-radius: 10px 10px 0 10px;
+    text-align: right;
+    color: #2d2d2d;
+    max-width: 70%;
+    overflow-wrap: anywhere;
+    font-weight: 400;
+}
+
+.assistant-bubble {
+    background-color: var(--primary);
+    max-width: 70%;
+    padding: 8px;
+    border-radius: 10px 10px 10px 0;
+    text-align: left;
+    color: var(--light);
+    overflow-wrap: break-word;
+    font-weight: 400;
+}
+
+/* Avatar */
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 10px;
+    align-self: flex-end;
+    border: 2px solid var(--light);
+}
