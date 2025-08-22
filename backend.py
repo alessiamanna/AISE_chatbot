@@ -8,6 +8,10 @@ import sys
 import asyncio
 from pathlib import Path
 from typing import List, Tuple
+from opik import configure
+
+from opik import track
+
 
 #import langchain e faiss 
 from langchain_community.vectorstores import FAISS
@@ -64,31 +68,34 @@ def _split_doc_to_documents(text: str, source: str) -> List[Document]:
 
 
 #conversione dei chunk in embedding. Se c'è già indice FAISS lo si carica e lo si unisce ai nuovi documenti se presenti
+from opik import track
+
+@track
 def build_or_update_notebook(list_of_files: List, notebook_name: str) -> None:
+
     docs: List[Document] = []
     for file_path in list_of_files:
         try:
             reader = PdfReader(file_path)
-            text = "".join(p.extract_text() or "" for p in reader.pages) #concatena il testo, splitta e accumula docs
+            text = "".join(p.extract_text() or "" for p in reader.pages)
             source_name = Path(file_path).name
             docs.extend(_split_doc_to_documents(text, source=source_name))
         except Exception as e:
             print(f"[WARN] Impossibile leggere {file_path}: {e}")
 
-    if not docs: #se non ci sono documenti validi->warning
+    if not docs:
         print("⚠️ Nessun documento valido da indicizzare.")
         return
 
     _ensure_event_loop()
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=GOOGLE_API_KEY) #creazione embedding con text-embedding-004
-    
-    
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/text-embedding-004", google_api_key=GOOGLE_API_KEY
+    )
+
     vs_path = os.path.join("vector_store", notebook_name)
     index_file_path = os.path.join(vs_path, "index.faiss")
 
-    #controllo se esiste già l'indice faissm
     if os.path.exists(index_file_path):
-        #se sì lo carico e merge
         print(f"Aggiornamento del notebook esistente: '{notebook_name}'")
         loaded_db = FAISS.load_local(vs_path, embeddings, allow_dangerous_deserialization=True)
         new_docs_db = FAISS.from_documents(docs, embeddings)
@@ -96,14 +103,15 @@ def build_or_update_notebook(list_of_files: List, notebook_name: str) -> None:
         loaded_db.save_local(vs_path)
         print(f"Notebook '{notebook_name}' aggiornato con successo.")
     else:
-        #altrimenti si crea un nuovo db da zero
         print(f"Creazione di un nuovo indice per il notebook: '{notebook_name}'")
         db = FAISS.from_documents(docs, embeddings)
         db.save_local(vs_path)
         print(f"Notebook '{notebook_name}' creato con successo.")
 
 
+
 #recupero fonti dall'indice
+@track
 def get_sources_from_notebook(notebook_name: str) -> List[str]:
     #carico indice faiss
     vs_path = os.path.join("vector_store", notebook_name)
@@ -133,6 +141,7 @@ NOTEBOOK_SYSTEM_PROMPT = (
 )
 
 #rag chain
+@track
 def prepare_rag_chain(
     notebook_name: str,
     temperature: float = 0.2,
@@ -186,6 +195,7 @@ def prepare_rag_chain(
     )
 
 #generazione risposta, invoca la catena con la domanda
+@track
 def generate_answer(question: str, rag_chain) -> Tuple[str, List[dict]]:
     try:
         response = rag_chain.invoke({"question": question})
@@ -204,6 +214,7 @@ def generate_answer(question: str, rag_chain) -> Tuple[str, List[dict]]:
         return "Si è verificato un problema nel generare la risposta.", []
 
 #llm per sintesi in punti chiave dei documenti forniti.
+@track
 def summarize_text(full_text: str) -> str:
     if not full_text: return "Nessun testo da riassumere."
     _ensure_event_loop()
@@ -221,6 +232,7 @@ def summarize_text(full_text: str) -> str:
         return "Impossibile generare il riassunto."
 
 #llm per fornire guida allo studio con domande e relative risposte
+@track
 def generate_study_guide(full_text: str) -> str:
     if not full_text: return "Nessun testo su cui generare una guida."
     _ensure_event_loop()
@@ -238,6 +250,7 @@ def generate_study_guide(full_text: str) -> str:
         return "Impossibile generare la guida allo studio."
 
 #pyttsx3 per fare conversione del testo TTS, riproducibile direttamente tramite streamlit
+@track
 def text_to_speech(text: str, audio_path: str = "summary_audio.mp3") -> str:
     try:
         engine = pyttsx3.init()

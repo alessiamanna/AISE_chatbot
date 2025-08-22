@@ -1,0 +1,16 @@
+streamlit>=1.32
+pypdf>=4.2.0
+
+langchain>=0.2.12
+langchain-community>=0.2.12
+langchain-google-genai>=1.0.7
+google-generativeai>=0.7.2
+
+faiss-cpu>=1.8.0.post1
+python-dotenv>=1.0.1
+pyttsx3>=2.90
+pywin32>=306; platform_system == "Windows"
+
+tiktoken>=0.7.0
+
+opik>=0.3.0

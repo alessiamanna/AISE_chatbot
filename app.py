@@ -5,8 +5,25 @@ import time
 from pypdf import PdfReader
 import backend
 
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+import streamlit as st
+from opik import configure
+
+
+configure(
+    use_local=False,
+    api_key=os.getenv("OPIK_API_KEY"),
+    workspace=os.getenv("OPIK_WORKSPACE"),  # "alessiamanna"
+)
+
+
 #configurazione pagina 
 st.set_page_config(page_title="My Local Notebook", page_icon="📚", layout="wide")
+
+
 
 #css custom per impostare il tema
 CSS_FILE = "theme.css"
